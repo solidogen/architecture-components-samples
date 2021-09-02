@@ -18,10 +18,25 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@+id/home">
+    app:startDestination="@id/home">
 
     <include app:graph="@navigation/home"/>
     <include app:graph="@navigation/list"/>
     <include app:graph="@navigation/form"/>
+
+    <action
+        android:id="@+id/action_go_to_login"
+        app:destination="@id/login_fragment" />
+
+    <fragment
+        android:id="@+id/login_fragment"
+        android:name="com.example.android.navigationadvancedsample.login.LoginFragment">
+
+        <action
+            android:id="@+id/action_go_to_home"
+            app:popUpTo="@id/login_fragment"
+            app:popUpToInclusive="true" />
+
+    </fragment>
 
 </navigation>
