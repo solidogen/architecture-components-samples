@@ -17,44 +17,35 @@
 package com.example.android.navigationadvancedsample
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController
+import androidx.navigation.NavGraph
+import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.android.navigationadvancedsample.databinding.ActivityMainBinding
 
-/**
- * An activity that inflates a layout that has a [BottomNavigationView].
- */
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var navController: NavController
-    private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        val navHostFragment = supportFragmentManager.findFragmentById(
-            R.id.nav_host_container
-        ) as NavHostFragment
-        navController = navHostFragment.navController
-
-        // Setup the bottom navigation view with navController
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
-        bottomNavigationView.setupWithNavController(navController)
-
-        // Setup the ActionBar with navController and 3 top level destinations
-        appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.titleScreen, R.id.leaderboard,  R.id.register)
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp(appBarConfiguration)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        val navHostFragment = binding.navHostContainer.getFragment<NavHostFragment>()
+            ?: error("No fragment added in container")
+        val navController = navHostFragment.navController
+        binding.bottomNav.setupWithNavController(navController)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            Log.d(this::class.java.simpleName, "Backqueue: \n${
+                navController.backQueue
+                    .filterNot { it.destination is NavGraph }
+                    .map {
+                        (it.destination as FragmentNavigator.Destination).className
+                    }
+            })"
+            )
+        }
     }
 }

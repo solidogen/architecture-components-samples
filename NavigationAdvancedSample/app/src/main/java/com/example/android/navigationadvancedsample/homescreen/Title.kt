@@ -37,6 +37,8 @@ class Title : Fragment() {
         view.findViewById<Button>(R.id.about_btn).setOnClickListener {
             findNavController().navigate(R.id.action_title_to_about)
         }
+        view.findViewById<Button>(R.id.goToLoginButton)
+            .setOnClickListener { findNavController().navigate(R.id.action_go_to_login) }
         return view
     }
 }
